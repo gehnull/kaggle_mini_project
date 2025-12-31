@@ -1,6 +1,11 @@
 # kaggle_mini_project
 
-
+<div align="center">
+  <img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">
+  <img src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white">
+  <img src="https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white">
+  <img src="https://img.shields.io/badge/xgboost-EB4223?style=for-the-badge&logo=xgboost&logoColor=white">
+</div>
 
 
 # 🔗 배지 및 이모지 공식 소스 링크
