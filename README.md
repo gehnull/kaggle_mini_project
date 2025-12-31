@@ -13,13 +13,14 @@
 
 ## 1. Project Overview
 - **문제정의(Problem Statement)** : 의료 접근성이 제한된 환경에서도 간단한 설문 정보만으로 당뇨병 고위험군을 식별할 수 있는 방법이 필요함
-- **과제(Task)** : 생활습관 또는 신체상태를 활용한 당뇨병 유무 분류
-- **데이터셋(Dataset)** : [Diabetes Health Indicators Dataset](https://www.kaggle.com/datasets/mohankrishnathalla/diabetes-health-indicators-dataset/data)
+- **과제(Task)** : 생활습관 또는 신체 상태를 활용한 당뇨병 유무 이진 분류
+- **데이터셋(Dataset)** : Diabetes Health Indicators Dataset (Kaggle)
 - **데이터 개요(Dataset Overview)** 
   + **관측치 수** : 100,000명
   + **변수 수** : 31개
   + **데이터 유형** : 건강 설문 기반 정형 데이터
-- **목표** " : 설문 응답만으로 **당뇨병 고위험군을 선별할 수 있는 예측 모델 구축** 
+  + **타겟 변수** : diagnosed_diabetes (이진 분류)
+- **목표(Goal)** : 설문 응답만으로 **당뇨병 고위험군을 선별할 수 있는 예측 모델 구축**
 
 ## 2. Feature Groups (변수 요인군)
 본 프로젝트에서는 변수의 인과적 역할과 데이터 누수 가능성을 고려하여 다음과 같이 요인군을 구성하였다.
@@ -33,7 +34,7 @@
 | 신체/대사 지표 | bmi, waist_to_hip_ratio, systolic_bp, diastolic_bp, heart_rate, cholesterol_total, triglycerides, hdl_cholesterol, ldl_cholesterol | 연속형 |
 | 타겟 변수 | diagnosed_diabetes | 이진 범주형 |
 
-※ 변수의 세부 정의와 값의 의미는 아래 Data Dictionary에 정리하였다.
+※ 각 변수의 세부 정의 및 값의 의미는 아래 Data Dictionary에 정리하였다.
 
 
 ## 3. Problem Definition
