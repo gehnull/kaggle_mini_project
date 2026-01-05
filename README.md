@@ -108,8 +108,8 @@ Stratified K-Fold 교차검증 기반 검증 실험 결과를 정리한 것이�
 
 ## 8. Feature Importance
 다변량 로지스틱 회귀 분석 결과를 통해 각 변수의 독립적인 영향력을 시각적으로 확인하였다. 
-가족력, 중성지방, BMI, 고혈압 병력, 연령, 수축기 혈압 등이 당뇨 진단 위험과 양의 방향으로 강한 연관성을 보였으며, 
-HDL 콜레스테롤, 식이 점수, 신체활동은 보호 요인으로 작용하였다. 
+- 가족력, 중성지방, BMI, 고혈압 병력, 연령, 수축기 혈압 등이 당뇨 진단 위험과 양의 방향으로 강한 연관성을 보임
+- HDL 콜레스테롤, 식이 점수, 신체활동은 보호 요인으로 작용하였다. 
 
 
 ![Logistic Regression Coefficients](output/Logistic_Regression_Coefficients.png)
