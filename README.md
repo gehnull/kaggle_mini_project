@@ -58,7 +58,9 @@
 - **클래스 불균형 해소** : 전체 데이터에 대한 오버샘플링은 적용하지 않았으며, 트리 기반 모델(XGBoost, LightGBM)에 한해 scale_pos_weight를 사용하여 불균형을 보정함
 
 ## 5. Feature Engineering 
-본 프로젝트에서는 각 변수의 단독 효과를 명확히 이해하기 위해 단일 변수 기반 분석을 먼저 수행하였다. 이후 기존 문헌의 가설을 데이터 구조에 맞게 재구성하여 대사적 위험, 생활습관 패턴, 사회경제적 요인의 결합 효과를 반영한 파생변수 및 상호작용 항을 생성하는 방향으로 분석을 확장할 계획이다. 
+본 프로젝트에서는 각 변수의 단독 효과를 명확히 이해하기 위해 단일 변수 기반 분석을 먼저 수행하였다. 
+
+이후 기존 문헌의 가설을 데이터 구조에 맞게 재구성하여 대사적 위험, 생활습관 패턴, 사회경제적 요인의 결합 효과를 반영한 파생변수 및 상호작용 항을 생성하는 방향으로 분석을 확장할 계획이다. 
 
 - **파생 변수 생성**
   + 지질 대사 위험 지표:  
@@ -104,11 +106,11 @@ Stratified K-Fold 교차검증 기반 검증 실험 결과를 정리한 것이�
 > Public/Private Leaderboard 기준 ROC-AUC는 약 0.69 수준을 기록하였다.
 
 
-## 8. Feature Importance (옵션)
+## 8. Feature Importance
 다변량 로지스틱 회귀 분석 결과를 통해 각 변수의 독립적인 영향력을 시각적으로 확인하였다. 
 가족력, 중성지방, BMI, 고혈압 병력, 연령, 수축기 혈압 등이 당뇨 진단 위험과 양의 방향으로 강한 연관성을 보였으며, 
 HDL 콜레스테롤, 식이 점수, 신체활동은 보호 요인으로 작용하였다. 
-[Logistic Regression Coefficients](output/Logistic Regression Coefficients.png)
+![Logistic Regression Coefficients](output/Logistic Regression Coefficients.png)
 
 ## 9. Conclusion
 본 프로젝트에서는 설문 기반 건강 데이터와 임상 지표를 활용하여 당뇨병 진단 여부를 예측하고 주요 위험 요인을 통계적·모델 기반 관점에서 함께 분석하였다. 
