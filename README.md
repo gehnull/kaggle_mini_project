@@ -50,43 +50,79 @@
     + 머신러닝 : 로지스틱회귀, 결정트리, XGBoost, LightGBM
 
 ## 4. 데이터 전처리
-- **결측치 처리**
-- **클래스 불균형 해소** : 오버샘플링(Oversampling) / 클래스 가중치(class weight) 적용
+- **결측치 확인** : train.csv 기준 결측치 없음
 - **범주형 변수 처리**
-    + 순서형 : Ordinal encoder 처리
-    + 일반범주 : One-Hot Encoding 처리
-- **데이터 스케일링** : StandardScaler를 이용한 표준화
+    + 순서형 : Ordinal Encoding 적용
+    + 명목형 : One-Hot Encoding 적용
+- **데이터 스케일링** : 수치형 변수에 대해 StandardScaler를 이용한 표준화
+- **클래스 불균형 해소** : 전체 데이터에 대한 오버샘플링은 적용하지 않았으며, 트리 기반 모델(XGBoost, LightGBM)에 한해 scale_pos_weight를 사용하여 불균형을 보정함
 
 ## 5. Feature Engineering 
+본 프로젝트에서는 각 변수의 단독 효과를 명확히 이해하기 위해 단일 변수 기반 분석을 먼저 수행하였다. 이후 기존 문헌의 가설을 데이터 구조에 맞게 재구성하여 대사적 위험, 생활습관 패턴, 사회경제적 요인의 결합 효과를 반영한 파생변수 및 상호작용 항을 생성하는 방향으로 분석을 확장할 계획이다. 
+
 - **파생 변수 생성**
+  + 지질 대사 위험 지표:  
+    `TG_HDL_ratio = triglycerides / hdl_cholesterol`
+  + 생활습관 위험 점수:  
+    흡연, 신체활동 부족, 고위험 음주, 낮은 식이 점수를 이진화한 후 합산한  
+    `lifestyle_risk_score`
 - **변수 변환**
+  + 음주량(`alcohol_consumption_per_week`)에 대해 문헌 기준을 참고한 상대적 고위험 음주군 파생 변수 생성
 - **상호작용 항 생성**
+  + 유전 × 생활습관 상호작용:  
+    `family_history_diabetes × smoking_status`,  
+    `family_history_diabetes × age`
+  + 사회경제적 요인 × 행동 요인 상호작용:  
+    `income_level × physical_activity_minutes_per_week`
+  + 신체 지표 간 상호작용:  
+    `bmi × waist_to_hip_ratio`
 
-## 5. 통계분석 핵심 인사이트
-- 혈당이 중요함 : 다른 알려진 요인보다 통계적으로 매우 훨씬 강력하게 유의미하게 영향이 있음을 확인 (via 회귀분석)
-![Q-Q Plot](output/qqplot.png)
 
-## 6. 모델링 평가지표
-- 최종 모델은 XGBoost로 선정
+## 6. 통계분석 핵심 인사이트
+- 다변량 로지스틱 회귀분석 결과 가족력, 연령, 체질량지수(BMI), 수축기 혈압은 다른 요인들을 통제한 이후에도 당뇨 진단 여부와 통계적으로 유의미한 연관성을 보이는 핵심 위험 요인으로 확인되었다. 
+- 특히 가족력은 전체 변수 중 가장 큰 효과 크기를 보이며, 유전적 요인의 중요성을 시사하였다. 
+- 혈당 및 진단 관련 변수(glucose, insulin, HbA1c)는 당뇨 진단 결과와 정보적으로 중복될 가능성이 있어 데이터 누수 방지를 위해 예측 모델 입력 변수에서는 제외하였다. 
 
-| Model | Accuracy | Recall | F1-Score | AUC-ROC |
-| :--- | :--- | :--- | :--- | :--- |
-| Random Forest | 0.85 | 0.70 | 0.74 | 0.88 |
-| **XGBoost** | **0.86** | **0.75** | **0.78** | **0.91** |
+## 7. 모델링 평가지표
 
-> **Note** : 최종 대회 결과는 Public 0.70807 / Private 0.6978 
+본 모델 비교 결과는 조별 프로젝트에서 수행한
+Stratified K-Fold 교차검증 기반 검증 실험 결과를 정리한 것이다.
 
-## 7. Feature Importance (옵션)
-- SHAP 활용
-- 예측 모델에서 영향력이 가장 컸던 지표 순위
-1. AGE
-2. BMI
-- 그림 추가
+| Model | Accuracy | Precision | Recall | F1-Score | ROC-AUC |
+|---|---|---|---|---|---|
+| Logistic Regression | 0.63 | 0.75 | 0.59 | 0.66 | 0.69 |
+| Decision Tree | 0.63 | 0.75 | 0.61 | 0.67 | 0.69 |
+| XGBoost | 0.68 | 0.70 | **0.85** | **0.77** | 0.72 |
+| **LightGBM** | 0.65 | **0.77** | 0.63 | 0.69 | **0.72** |
 
-## 8. Conclusion
-- 결론 1
-- 결론 2
-- 결론 3
+- 평가는 Stratified K-Fold 교차검증 기반 Validation 결과이다.
+- ROC-AUC를 주요 지표로 삼았으며 Precision과 Recall의 균형을 함께 고려하였다.
+- 조별 프로젝트 기준에서는 LightGBM이 ROC-AUC 측면에서 가장 안정적인 성능을 보여
+  최종 모델로 선정되었다.
+
+> Note: 조별 프로젝트에서 Kaggle 대회에 제출한 결과,
+> Public/Private Leaderboard 기준 ROC-AUC는 약 0.69 수준을 기록하였다.
+
+
+## 8. Feature Importance (옵션)
+다변량 로지스틱 회귀 분석 결과를 통해 각 변수의 독립적인 영향력을 시각적으로 확인하였다. 
+가족력, 중성지방, BMI, 고혈압 병력, 연령, 수축기 혈압 등이 당뇨 진단 위험과 양의 방향으로 강한 연관성을 보였으며, 
+HDL 콜레스테롤, 식이 점수, 신체활동은 보호 요인으로 작용하였다. 
+[Logistic Regression Coefficients](output/Logistic Regression Coefficients.png)
+
+## 9. Conclusion
+본 프로젝트에서는 설문 기반 건강 데이터와 임상 지표를 활용하여 당뇨병 진단 여부를 예측하고 주요 위험 요인을 통계적·모델 기반 관점에서 함께 분석하였다. 
+다변량 로지스틱 회귀분석 결과, 가족력, 연령, 체질량지수(BMI), 수축기 혈압, 중성지방 등이 다른 요인들을 통제한 이후에도 당뇨 진단 위험과 유의미한 연관성을 보이는 핵심 위험 요인으로 확인되었다. 반면, HDL 콜레스테롤, 신체활동, 식이 점수는 상대적으로 보호 요인으로 작용하였다. 
+예측 모델링 측면에서는 여러 분류 모델을 비교한 결과 트리 기반 모델이 비선형 관계를 효과적으로 포착하였으며,
+ROC-AUC 기준 약 0.69 수준의 성능을 확인하였다.
+특히 진단 지표에 해당하는 혈당 관련 변수들을 제외한 상태에서도 의미 있는 예측 성능을 확보할 수 있음을 확인하였다.
+본 분석은 진단 검사에 의존하지 않고도 생활습관, 사회경제적 요인, 신체 지표를 활용하여 당뇨병 고위험군을 선별할 수 있는 가능성을 보여주며, 예방 중심의 건강 관리 전략 수립에 시사점을 제공한다. 
+
+## 10. Limitations & Future Work
+본 분석에서는 각 변수의 단독 효과를 명확히 이해하기 위해 복잡한 파생변수나 상호작용 항을 적용하지 않은
+단일 변수 기반 분석을 우선적으로 수행하였다.
+향후 분석에서는 Feature Engineering 단계에서 제안한 바와 같이, 지질 대사 지표, 생활습관 위험 점수, 사회경제적 요인과 행동 요인의 상호작용 항 등을 추가로 생성하여 비선형적 관계와 복합적 위험 구조를 보다 정교하게 반영할 계획이다.
+
 
 # 보고서
 - 프로젝트 상세보고서는 PDF 슬라이드 자료를 참고하여 주세요
@@ -107,12 +143,4 @@
 | PhysActivity | 신체 활동 여부 | 최근 30일 운동 여부 (0/1) |
 | GenHlth | 주관적 건강 상태 | 1(매우 좋음) ~ 5(매우 나쁨) |
 | Age | 연령대 | 1(18–24) ~ 13(80+) |
-
-
-# 🔗 배지 및 이모지 공식 소스 링크
-| 용도 | 사이트 이름 | 링크 |
-| :--- | :--- | :--- |
-| **배지 생성** | Shields.io | [https://shields.io/](https://shields.io/) |
-| **로고/색상 검색** | Simple Icons | [https://simpleicons.org/](https://simpleicons.org/) |
-| **이모지 검색** | Emoji Cheat Sheet | [https://github.com/ikatyang/emoji-cheat-sheet](https://github.com/ikatyang/emoji-cheat-sheet) |
 
